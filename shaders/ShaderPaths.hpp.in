@@ -1,0 +1,18 @@
+#ifndef __SHADER_PATHS_HPP
+#define __SHADER_PATHS_HPP
+
+#include <string>
+
+namespace generated
+{
+        class ShaderPaths
+        {
+                public:
+
+                        inline static std::string getShaderDirectory()
+                        {
+                                return "@SHADER_DIR@/";
+                        }
+        };
+};
+#endif//__SHADER_PATHS_HPP
