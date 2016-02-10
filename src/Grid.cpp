@@ -61,7 +61,7 @@ void Grid::renderGeometry(atlas::math::Matrix4 proj,
         glBindVertexArray(mVao);
         Matrix4 mvp = proj * view * mModel;
         glUniformMatrix4fv(mUniforms["MVP"], 1, GL_FALSE, &mvp[0][0]);
-        GLfloat color[] = {0.489, 0.489, 0.489};
+        GLfloat color[] = {0.289, 0.289, 0.289};
         glUniform3fv(mUniforms["color"], 1, color);
         glDrawArrays(GL_LINES, 0, mVertexCount);
         glBindVertexArray(0);
