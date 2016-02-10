@@ -98,7 +98,6 @@ struct ArcCamera::ArcCameraImpl
         atlas::math::Matrix4 tumbleMatrix;
         atlas::math::Matrix4 trackMatrix;
         ArcBall ball;
-
 };
 
 ArcCamera::ArcCamera() : mImpl(new ArcCameraImpl) {}
@@ -113,6 +112,7 @@ void ArcCamera::mouseDown(atlas::math::Point2 const& p, ArcCamera::CameraMovemen
         {
                 mImpl->ball.mouseDown(p);
         }
+        _cacheSet = false;
 }
 
 void ArcCamera::mouseDrag(atlas::math::Point2 const& p)
@@ -145,6 +145,7 @@ void ArcCamera::mouseDrag(atlas::math::Point2 const& p)
                         break;
         }
         mImpl->lastPos = p;
+        _cacheSet = false;
 }
 
 void ArcCamera::mouseScroll(atlas::math::Point2 const& p)
@@ -152,6 +153,7 @@ void ArcCamera::mouseScroll(atlas::math::Point2 const& p)
         USING_ATLAS_MATH_NS;
         mImpl->dolly -= p.y;
         mImpl->dollyMatrix = glm::translate(Matrix4(1.f), Vector(0, 0, -1.f * mImpl->dolly));
+        _cacheSet = false;
 }
 
 void ArcCamera::mouseUp()
@@ -162,16 +164,21 @@ void ArcCamera::mouseUp()
 void ArcCamera::resetCamera()
 {
         mImpl->resetAll();
+        _cacheSet = false;
 }
 
 void ArcCamera::setDims(int width, int height)
 {
         mImpl->setDims(width, height);
+        _cacheSet = false;
 }
 
 atlas::math::Matrix4 ArcCamera::getCameraMatrix()
 {
-        return mImpl->dollyMatrix * mImpl->trackMatrix * mImpl->tumbleMatrix;
+        if (_cacheSet) return _cachedView;
+        _cacheSet = true;
+        _cachedView = mImpl->dollyMatrix * mImpl->trackMatrix * mImpl->tumbleMatrix;
+        return _cachedView;
 }
 
 

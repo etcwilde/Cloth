@@ -67,6 +67,9 @@ class ArcCamera : public atlas::utils::Camera
 
                 struct ArcCameraImpl;
                 std::unique_ptr<ArcCameraImpl> mImpl;
+
+                bool _cacheSet;
+                atlas::math::Matrix4 _cachedView;
 };
 
 #endif//__CAMERA_HPP
