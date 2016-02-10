@@ -8,7 +8,10 @@
 Scene::Scene() :
         mDragging(false),
         mPaused(true),
-        mPrevTime(0.0)
+        mPrevTime(0.0),
+        _movementType(Scene::MoveType::CAMERA),
+        _viewing(Scene::ViewType::USER_VIEW),
+        mSplineCam(mSpline)
 {
         glDepthFunc(GL_LEQUAL);
         glEnable(GL_DEPTH_TEST);
@@ -23,10 +26,6 @@ Scene::~Scene() { }
 void Scene::mousePressEvent(int b, int a, int m, double x, double y)
 {
         USING_ATLAS_CORE_NS;
-#ifdef PROG_DEBUG
-        Log::log(Log::SeverityLevel::DEBUG, "Mouse Press Event: (" + std::to_string(x) + ", " + std::to_string(y) + ")");
-#endif
-
         USING_ATLAS_MATH_NS;
         if(b == GLFW_MOUSE_BUTTON_MIDDLE)
         {
@@ -81,21 +80,36 @@ void Scene::scrollEvent(double x, double y)
 {
         USING_ATLAS_CORE_NS;
         USING_ATLAS_MATH_NS;
-#ifdef PROG_DEBUG
-        Log::log(Log::SeverityLevel::DEBUG, "Mouse Scroll Event: (" + std::to_string(x) + ", " + std::to_string(y) + ")");
-#endif
         mCamera.mouseScroll(Point2(x, y));
 }
 
 void Scene::keyPressEvent(int key, int scancode, int action, int modes)
 {
-        if (action == GLFW_PRESS)
+        switch(action)
         {
-                if (key == GLFW_KEY_SPACE)
-                {
-                        mPaused = !mPaused;
-                }
-        }
+                case GLFW_PRESS:
+                        switch(key)
+                        {
+                                case GLFW_KEY_SPACE:
+                                        mPaused = !mPaused;
+                                        break;
+                                case GLFW_KEY_C:
+                                        if (_viewing >= SPLINE_VIEW) _viewing = USER_VIEW;
+                                        else
+                                        {
+                                                int viewerInt = _viewing;
+                                                viewerInt++;
+                                                _viewing = static_cast<ViewType>(viewerInt);
+                                        }
+#ifdef PROG_DEBUG
+                                        USING_ATLAS_CORE_NS;
+                                        Log::log(Log::SeverityLevel::DEBUG, "Camera: " + std::to_string(_viewing));
+#endif
+                        };
+                        break;
+                default:
+                        break;
+        };
 }
 
 void Scene::screenResizeEvent(int width, int height)
@@ -114,6 +128,7 @@ void Scene::updateScene(double time)
                 mTime.totalTime += static_cast<float>(time);
                 mTime.currentTime = static_cast<float>(time);
                 mTime.deltaTime *= 2.f;
+                mSplineCam.updateCamera(mTime);
         }
 }
 
@@ -123,8 +138,17 @@ void Scene::renderScene()
         glClearColor(grey, grey, grey, 1.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
-        mView = mCamera.getCameraMatrix();
+        switch(_viewing)
+        {
+                case USER_VIEW:
+                        mView = mCamera.getCameraMatrix();
+                        break;
+                case SPLINE_VIEW:
+                        mView = mSplineCam.getCameraMatrix();
+                        break;
+        }
         mGrid.renderGeometry(mProjection, mView);
+        //if(_viewing != SPLINE_VIEW)
         mSpline.renderGeometry(mProjection, mView);
 }
 
@@ -140,32 +164,14 @@ int Scene::pickScene(double mx, double my)
 
         USING_ATLAS_CORE_NS;
 
-        // std::vector<glm::vec3> test_points;
-        // //if( _selector == Scene::SelectionType::SPLINE)
-        // {
-        //         test_points = mSpline.getPoints();
-        // }
-        //else return -1;
-
-        //if (test_points.size() == 0) return -1;
-
-        glm::vec4 viewport = glm::vec4(0.f, 0.f, _width, _height);
+        const glm::vec4 viewport = glm::vec4(0.f, 0.f, _width, _height);
         const glm::vec3 ray_start = glm::unProject(glm::vec3(mx, my, 0.f),
                         mCamera.getCameraMatrix(),
                         mProjection, viewport);
         const glm::vec3 ray_end = glm::unProject(glm::vec3(mx, my, 1.f),
                         mCamera.getCameraMatrix(),
                         mProjection, viewport);
-
-        //mLastPick[0] = ray_start;
-        //mLastPick[1] = ray_end;
-
-        // okay neat
-        const glm::vec3 b = ray_end - ray_start;
-
-
-
-//#ifdef PROG_DEBUG
+#ifdef PROG_DEBUG
        Log::log(Log::SeverityLevel::DEBUG, "From " +
                        std::to_string(ray_start.x) + ", " +
                        std::to_string(ray_start.y) + ", " +
@@ -174,9 +180,8 @@ int Scene::pickScene(double mx, double my)
                        std::to_string(ray_end.y) + ", " +
                        std::to_string(ray_end.z)
                        );
-//#endif
-
-
+#endif
+        //const glm::vec3 b = ray_end - ray_start;
         //glm::vec3 nearest;
         //float closest = 10000.f;
         //size_t selected_index = 0;
@@ -195,11 +200,13 @@ int Scene::pickScene(double mx, double my)
         //         }
         // }
 
+#ifdef PROG_DEBUG
         //Log::log(Log::SeverityLevel::DEBUG,
         //                "Closest[" + std::to_string(closest) + "]: (" +
         //                std::to_string(nearest.x) + ", " +
         //                std::to_string(nearest.y) + ", " +
         //                std::to_string(nearest.z) + ")");
 
+#endif
         return 0;
 }

@@ -1,7 +1,7 @@
 #ifndef __SPLINE_HPP
 #define __SPLINE_HPP
 
-#define _SPLINE_STEP 0.05f
+#define _SPLINE_STEP 0.01f
 
 #include <atlas/math/Math.hpp>
 #include <atlas/core/Log.hpp>
@@ -27,12 +27,14 @@ class Spline : public PointGeometry
                 void resetGeometry() override;
 
                 glm::vec3 sampleCurve(size_t segment, float t) const;
+
+                inline size_t segments() const
+                { return mCtrlsPts.size() > 3 ? mCtrlsPts.size() - 3 : 0; }
         private:
                 GLuint mVao;
                 GLuint mVbo[2]; // 0 is for the vertex points 1 is for spline
 
                 void genSpline(); // Uses control points to generate the spline
-
 
                 glm::detail::fmat4x4SIMD mSpline; // The spline matrix
                 std::vector<glm::vec3> mSplinePoints;

@@ -11,6 +11,7 @@
 #include <iostream>
 
 #include "Camera.hpp"
+#include "SplineCam.hpp"
 #include "Grid.hpp"
 #include "Spline.hpp"
 #include "ShaderPaths.hpp"
@@ -36,8 +37,8 @@ class Scene: public atlas::utils::Scene
         private:
 
                 // Not a whole lot of options right now
-                enum SelectionType { SPLINE };
                 enum MoveType { CAMERA, OBJECT };
+                enum ViewType { USER_VIEW, SPLINE_VIEW };
 
                 glm::vec3 getCameraPos();
 
@@ -52,13 +53,13 @@ class Scene: public atlas::utils::Scene
                 int _height;
 
                 MoveType _movementType;
-                SelectionType _selector;
+                ViewType _viewing;
                 size_t _selected_idx;
 
-
-                ArcCamera mCamera;
-                Grid mGrid;
                 Spline mSpline;
+                Grid mGrid;
+                ArcCamera mCamera;
+                SplineCamera mSplineCam;
 
                 // For displaying the last pick
                 GLuint mPickArray;
