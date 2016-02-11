@@ -11,7 +11,8 @@ Scene::Scene() :
         mPrevTime(0.0),
         _movementType(Scene::MoveType::CAMERA),
         _viewing(Scene::ViewType::USER_VIEW),
-        mSplineCam(mSpline)
+        mSplineCam(mSpline),
+        mCloth(Cloth(8, 8))
 {
         glDepthFunc(GL_LEQUAL);
         glEnable(GL_DEPTH_TEST);
@@ -92,6 +93,13 @@ void Scene::keyPressEvent(int key, int scancode, int action, int modes)
                         {
                                 case GLFW_KEY_SPACE:
                                         mPaused = !mPaused;
+                                        mCloth.setPause(mPaused);
+                                        break;
+                                case GLFW_KEY_F:
+                                        mCloth.toggleFan();
+                                        break;
+                                case GLFW_KEY_S:
+                                        stepScene();
                                         break;
                                 case GLFW_KEY_C:
                                         if (_viewing >= SPLINE_VIEW) _viewing = USER_VIEW;
@@ -127,8 +135,9 @@ void Scene::updateScene(double time)
                 mTime.deltaTime = static_cast<float>(time) - mTime.currentTime;
                 mTime.totalTime += static_cast<float>(time);
                 mTime.currentTime = static_cast<float>(time);
-                mTime.deltaTime *= 2.f;
                 mSplineCam.updateCamera(mTime);
+                mTime.deltaTime *= 2.f;
+                mCloth.updateGeometry(mTime);
         }
 }
 
@@ -149,6 +158,7 @@ void Scene::renderScene()
         }
         mGrid.renderGeometry(mProjection, mView);
         //if(_viewing != SPLINE_VIEW)
+        mCloth.renderGeometry(mProjection, mView);
         mSpline.renderGeometry(mProjection, mView);
 }
 

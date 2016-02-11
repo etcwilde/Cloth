@@ -5,9 +5,10 @@ Cloth::Cloth(unsigned int width , unsigned int height):
         mWidth(width),
         mHeight(height),
         mMasses(width * height),
-        mPinned({0,1, 6,7}),
+        mPinned({0,1, 6, 7}),
         mVelocities(width * height),
-        mPaused(false) // TODO: Change this in the future
+        mFan(false),
+        mPaused(true)
 {
 #ifdef PROG_DEBUG
         USING_ATLAS_CORE_NS;
@@ -16,7 +17,7 @@ Cloth::Cloth(unsigned int width , unsigned int height):
         mModel = atlas::math::Matrix4(1.f);
         assert(sizeof(unsigned int) == sizeof(float));
         std::vector<unsigned int> indices;
-        glm::vec3 origin(-3.5f, 8.f, 0.f);
+        glm::vec3 origin(-1.75f, 8.f, 0.f);
         const float diagnonalWidth = std::sqrt(CLOTH_DEFAULT_SPACE * CLOTH_DEFAULT_SPACE + CLOTH_DEFAULT_SPACE * CLOTH_DEFAULT_SPACE);
         for (unsigned int h = 0; h < mHeight; ++h)
                 for (unsigned int w = 0; w < mWidth; ++w)
@@ -174,8 +175,14 @@ void Cloth::updateGeometry(atlas::utils::Time const& t)
         // gravitay
         const glm::vec4 g(0, -9.087, 0, 0);
         glm::vec4 fan(0.f);
-        if (mFan) fan = glm::vec4(0, 0, std::sin(t.currentTime), 0) / 3.f;
-        // TODO: We can use a sin wave to generate some fluttering
+        if (mFan)
+                fan =
+                        glm::vec4(std::cos(t.currentTime / 20.f) * 2.f,
+                                        0, 0, 0) +
+                        glm::vec4(0, 0,
+                                        std::abs(std::sin(t.currentTime / 2.f) * 10.f), 0) +
+                        glm::vec4(0, 0,
+                                        std::sin(t.currentTime) * 4.f, 0);
 
         // Copy masses
         std::vector<mass_t> masses(mMasses); // Update these, then overwrite the original

@@ -13,14 +13,18 @@
 
 Spline::Spline()
 {
-        mCtrlsPts.push_back(glm::vec3(1, 1, 0));
-        mCtrlsPts.push_back(glm::vec3(2, 3, 0));
-        mCtrlsPts.push_back(glm::vec3(4, 3, 0));
-        mCtrlsPts.push_back(glm::vec3(5, 1, 0));
-        mCtrlsPts.push_back(glm::vec3(5, 0, 1));
-        mCtrlsPts.push_back(glm::vec3(4, 0, 2));
-        mCtrlsPts.push_back(glm::vec3(4, 0, 5));
 
+        mCtrlsPts.push_back(glm::vec3(0, 2, -10));
+        mCtrlsPts.push_back(glm::vec3(10, 2, 0));
+        mCtrlsPts.push_back(glm::vec3(7, 2, 7));
+        mCtrlsPts.push_back(glm::vec3(0, 2, 10));
+        mCtrlsPts.push_back(glm::vec3(-7, 2, 7));
+        mCtrlsPts.push_back(glm::vec3(-10, 2, 0));
+        mCtrlsPts.push_back(glm::vec3(-7, 2, -7));
+        mCtrlsPts.push_back(glm::vec3(0, 2, -10));
+        mCtrlsPts.push_back(glm::vec3(7, 2, -7));
+        mCtrlsPts.push_back(glm::vec3(10, 2, 0));
+        mCtrlsPts.push_back(glm::vec3(0, 2, 10));
         USING_ATLAS_GL_NS;
 
         glGenVertexArrays(1, &mVao);

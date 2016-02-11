@@ -15,6 +15,7 @@
 #include "Grid.hpp"
 #include "Spline.hpp"
 #include "ShaderPaths.hpp"
+#include "Cloth.hpp"
 
 class Scene: public atlas::utils::Scene
 {
@@ -40,6 +41,13 @@ class Scene: public atlas::utils::Scene
                 enum MoveType { CAMERA, OBJECT };
                 enum ViewType { USER_VIEW, SPLINE_VIEW };
 
+                inline void stepScene()
+                {
+                        mTime.deltaTime = 0.5f;
+                        mTime.totalTime += 0.5f;
+                        mCloth.updateGeometry(mTime);
+                }
+
                 glm::vec3 getCameraPos();
 
                 // Returns the index of the thing
@@ -60,6 +68,7 @@ class Scene: public atlas::utils::Scene
                 Grid mGrid;
                 ArcCamera mCamera;
                 SplineCamera mSplineCam;
+                Cloth mCloth;
 
                 // For displaying the last pick
                 GLuint mPickArray;

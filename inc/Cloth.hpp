@@ -1,7 +1,7 @@
 #ifndef __CLOTH_HPP
 #define __CLOTH_HPP
 
-#define CLOTH_DEFAULT_MASS      0.2f // Mass of masses (grams)
+#define CLOTH_DEFAULT_MASS      0.14f // Mass of masses (grams)
 #define CLOTH_DEFAULT_SPACE     0.5f // Spacing between masses
 #define CLOTH_DEFAULT_K 6.0f // Spring constant
 #define CLOTH_DEFAULT_D 0.4f // Dampening Constant
@@ -31,6 +31,10 @@ class Cloth : public atlas::utils::Geometry
                 void updateGeometry(atlas::utils::Time const& t) override;
                 void renderGeometry(atlas::math::Matrix4 proj, atlas::math::Matrix4 view) override;
                 void resetGeometry() override;
+
+                inline void setPause(bool p) {mPaused = p; }
+                inline void togglePause() { mPaused = !mPaused; }
+                inline void toggleFan() { mFan = !mFan; }
         private:
                 struct neighbor_t
                 {
@@ -50,6 +54,8 @@ class Cloth : public atlas::utils::Geometry
 
                 inline GLuint getIndex(unsigned int w, unsigned int h) const
                 { return w + mHeight * h; }
+
+                
         private:
                 GLuint mVao;
                 GLuint mVertexBuffer;

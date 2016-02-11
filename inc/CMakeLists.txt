@@ -6,5 +6,6 @@ set(PROJECT_INCLUDE_LIST
         "${CMAKE_CURRENT_SOURCE_DIR}/Camera.hpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/Spline.hpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/SplineCam.hpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/Cloth.hpp"
         PARENT_SCOPE)
 

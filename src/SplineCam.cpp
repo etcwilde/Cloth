@@ -38,7 +38,7 @@ atlas::math::Matrix4 SplineCamera::getCameraMatrix()
         float sample = mCurrentTime.currentTime - segment;
         segment %= mSpline.segments();
         glm::vec3 forward_sample = mSpline.sampleCurve(segment + 1, sample);
-        mRotationMatrix = glm::lookAt(mPositionVector, forward_sample, glm::vec3(0, 1, 0));
+        mRotationMatrix = glm::lookAt(mPositionVector, glm::vec3(0, 2, 0), glm::vec3(0, 1, 0));
         mPositionVector = mSpline.sampleCurve(segment, sample);;
         return mRotationMatrix;
 }
