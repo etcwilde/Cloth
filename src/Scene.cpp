@@ -173,6 +173,9 @@ int Scene::pickScene(double mx, double my)
 {
 
         USING_ATLAS_CORE_NS;
+#ifndef PROG_DEBUG
+        Log::log(Log::SeverityLevel::ERR, "Scene Picking Not Implemented");
+#else
 
         const glm::vec4 viewport = glm::vec4(0.f, 0.f, _width, _height);
         const glm::vec3 ray_start = glm::unProject(glm::vec3(mx, my, 0.f),
@@ -181,16 +184,14 @@ int Scene::pickScene(double mx, double my)
         const glm::vec3 ray_end = glm::unProject(glm::vec3(mx, my, 1.f),
                         mCamera.getCameraMatrix(),
                         mProjection, viewport);
-#ifdef PROG_DEBUG
-       Log::log(Log::SeverityLevel::DEBUG, "From " +
-                       std::to_string(ray_start.x) + ", " +
-                       std::to_string(ray_start.y) + ", " +
-                       std::to_string(ray_start.z) + " to " +
-                       std::to_string(ray_end.x) + ", " +
-                       std::to_string(ray_end.y) + ", " +
-                       std::to_string(ray_end.z)
-                       );
-#endif
+        Log::log(Log::SeverityLevel::DEBUG, "From " +
+                        std::to_string(ray_start.x) + ", " +
+                        std::to_string(ray_start.y) + ", " +
+                        std::to_string(ray_start.z) + " to " +
+                        std::to_string(ray_end.x) + ", " +
+                        std::to_string(ray_end.y) + ", " +
+                        std::to_string(ray_end.z)
+                );
         //const glm::vec3 b = ray_end - ray_start;
         //glm::vec3 nearest;
         //float closest = 10000.f;
@@ -209,13 +210,12 @@ int Scene::pickScene(double mx, double my)
         //                 nearest = test_points[selected_index];
         //         }
         // }
-
-#ifdef PROG_DEBUG
         //Log::log(Log::SeverityLevel::DEBUG,
         //                "Closest[" + std::to_string(closest) + "]: (" +
         //                std::to_string(nearest.x) + ", " +
         //                std::to_string(nearest.y) + ", " +
         //                std::to_string(nearest.z) + ")");
+
 
 #endif
         return 0;

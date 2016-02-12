@@ -10,10 +10,6 @@ Cloth::Cloth(unsigned int width , unsigned int height):
         mVelocities(width * height),
         mPaused(true)
 {
-#ifdef PROG_DEBUG
-        USING_ATLAS_CORE_NS;
-        Log::log(Log::SeverityLevel::DEBUG, "Size of int: " + std::to_string(sizeof(unsigned int)) +", Float: " + std::to_string(sizeof(float)));
-#endif
         mModel = atlas::math::Matrix4(1.f);
         assert(sizeof(unsigned int) == sizeof(float));
         std::vector<unsigned int> indices;

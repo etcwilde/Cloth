@@ -40,7 +40,6 @@ Spline::Spline()
 
         USING_ATLAS_CORE_NS;
         size_t points = sizeof(glm::vec3) * mSplinePoints.size();
-        Log::log(Log::SeverityLevel::DEBUG, "Points data size: " + std::to_string(points));
         glBufferData(GL_ARRAY_BUFFER, points, mSplinePoints.data(), GL_STATIC_DRAW);
 
         const std::string shaderDir = generated::ShaderPaths::getShaderDirectory();
@@ -109,9 +108,7 @@ void Spline::genSpline()
 {
         USING_ATLAS_CORE_NS;
         size_t sections = mCtrlsPts.size() > 3 ? mCtrlsPts.size() - 3 : 0;
-        Log::log(Log::SeverityLevel::DEBUG, "Spline Sections: " + std::to_string(sections));
         size_t steps = static_cast<size_t>(1.f / _SPLINE_STEP);
-        Log::log(Log::SeverityLevel::DEBUG, "Spline Steps: " + std::to_string(steps));
 
         size_t total_size = sections * steps;
         mSplinePoints = std::vector<glm::vec3>();
