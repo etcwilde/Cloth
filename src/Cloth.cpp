@@ -4,10 +4,10 @@
 Cloth::Cloth(unsigned int width , unsigned int height):
         mWidth(width),
         mHeight(height),
-        mMasses(width * height),
-        mPinned({0,1, 6, 7}),
-        mVelocities(width * height),
         mFan(false),
+        mMasses(width * height),
+        mPinned({0,1, 6, 7, 56, 63}),
+        mVelocities(width * height),
         mPaused(true)
 {
 #ifdef PROG_DEBUG
@@ -59,54 +59,54 @@ Cloth::Cloth(unsigned int width , unsigned int height):
                         // Straight Neighbors
                         if(h != 0)
                                 mMasses[index].neighbors[0]=
-                                {getIndex(w, h-1) + 1, {CLOTH_DEFAULT_K, CLOTH_DEFAULT_D, CLOTH_DEFAULT_SPACE}};
+                                {getIndex(w, h-1) + 1, {CLOTH_DEFAULT_KS, CLOTH_DEFAULT_D, CLOTH_DEFAULT_SPACE}};
                         else
                                 mMasses[index].neighbors[0].index = 0;
                         if(w != mWidth - 1)
                                 mMasses[index].neighbors[1]=
-                                {getIndex(w+1, h)+1, {CLOTH_DEFAULT_K, CLOTH_DEFAULT_D, CLOTH_DEFAULT_SPACE}};
+                                {getIndex(w+1, h)+1, {CLOTH_DEFAULT_KS, CLOTH_DEFAULT_D, CLOTH_DEFAULT_SPACE}};
                         else mMasses[index].neighbors[1].index = 0;
                         if(h != mHeight - 1)
                                 mMasses[index].neighbors[2]=
-                                {getIndex(w, h+1)+1, {CLOTH_DEFAULT_K, CLOTH_DEFAULT_D, CLOTH_DEFAULT_SPACE}};
+                                {getIndex(w, h+1)+1, {CLOTH_DEFAULT_KS, CLOTH_DEFAULT_D, CLOTH_DEFAULT_SPACE}};
                         else mMasses[index].neighbors[2].index = 0;
                         if(w != 0)
                                 mMasses[index].neighbors[3]=
-                                {getIndex(w-1, h)+1, {CLOTH_DEFAULT_K, CLOTH_DEFAULT_D, CLOTH_DEFAULT_SPACE}};
+                                {getIndex(w-1, h)+1, {CLOTH_DEFAULT_KS, CLOTH_DEFAULT_D, CLOTH_DEFAULT_SPACE}};
                         else mMasses[index].neighbors[3].index = 0;
                         // Diagonal Neighbors
                         if(h != 0 && w != 0)
                                 mMasses[index].neighbors[4]=
-                                {getIndex(w-1,h-1)+1, {CLOTH_DEFAULT_K, CLOTH_DEFAULT_D, diagnonalWidth}};
+                                {getIndex(w-1,h-1)+1, {CLOTH_DEFAULT_KU, CLOTH_DEFAULT_D, diagnonalWidth}};
                         else mMasses[index].neighbors[4].index = 0;
                         if(h != 0 && w != mWidth - 1)
                                 mMasses[index].neighbors[5]=
-                                {getIndex(w+1,h-1)+1, {CLOTH_DEFAULT_K, CLOTH_DEFAULT_D, diagnonalWidth}};
+                                {getIndex(w+1,h-1)+1, {CLOTH_DEFAULT_KU, CLOTH_DEFAULT_D, diagnonalWidth}};
                         else mMasses[index].neighbors[5].index = 0;
                         if(h != mHeight - 1 && w != mWidth - 1)
                                 mMasses[index].neighbors[6]=
-                                {getIndex(w+1, h+1)+1, {CLOTH_DEFAULT_K, CLOTH_DEFAULT_D, diagnonalWidth}};
+                                {getIndex(w+1, h+1)+1, {CLOTH_DEFAULT_KU, CLOTH_DEFAULT_D, diagnonalWidth}};
                         else mMasses[index].neighbors[6].index = 0;
                         if(h != mHeight - 1 && w != 0)
                                 mMasses[index].neighbors[7]=
-                                {getIndex(w-1, h+1)+1, {CLOTH_DEFAULT_K, CLOTH_DEFAULT_D, diagnonalWidth}};
+                                {getIndex(w-1, h+1)+1, {CLOTH_DEFAULT_KU, CLOTH_DEFAULT_D, diagnonalWidth}};
                         else mMasses[index].neighbors[7].index = 0;
                         // Two away -- Could use straight neighbors to help
                         if(h != 1 && h != 0)
                                 mMasses[index].neighbors[8]=
-                                {getIndex(w, h-2)+1, {CLOTH_DEFAULT_K, CLOTH_DEFAULT_D, CLOTH_DEFAULT_SPACE * 2}};
+                                {getIndex(w, h-2)+1, {CLOTH_DEFAULT_KB, CLOTH_DEFAULT_D, CLOTH_DEFAULT_SPACE * 2}};
                         else mMasses[index].neighbors[8].index = 0;
                         if(w + 1 != mWidth - 1 && w != mWidth - 1)
                                 mMasses[index].neighbors[9]=
-                                {getIndex(w+2, h)+1, {CLOTH_DEFAULT_K, CLOTH_DEFAULT_D, CLOTH_DEFAULT_SPACE * 2}};
+                                {getIndex(w+2, h)+1, {CLOTH_DEFAULT_KB, CLOTH_DEFAULT_D, CLOTH_DEFAULT_SPACE * 2}};
                         else mMasses[index].neighbors[9].index = 0;
                         if(h + 1 != mHeight - 1 && h != mHeight - 1)
                                 mMasses[index].neighbors[10]=
-                                {getIndex(w, h+2)+1, {CLOTH_DEFAULT_K, CLOTH_DEFAULT_D, CLOTH_DEFAULT_SPACE * 2}};
+                                {getIndex(w, h+2)+1, {CLOTH_DEFAULT_KB, CLOTH_DEFAULT_D, CLOTH_DEFAULT_SPACE * 2}};
                         else mMasses[index].neighbors[10].index = 0;
                         if(w != 1 && w != 0)
                                 mMasses[index].neighbors[11]=
-                                {getIndex(w-2, h)+1, {CLOTH_DEFAULT_K, CLOTH_DEFAULT_D, CLOTH_DEFAULT_SPACE * 2}};
+                                {getIndex(w-2, h)+1, {CLOTH_DEFAULT_KB, CLOTH_DEFAULT_D, CLOTH_DEFAULT_SPACE * 2}};
                         else mMasses[index].neighbors[11].index = 0;
                 }
         unsigned int current_index = 0;
@@ -166,10 +166,6 @@ Cloth::~Cloth()
 
 void Cloth::updateGeometry(atlas::utils::Time const& t)
 {
-#ifdef PROG_DEBUG
-        USING_ATLAS_CORE_NS;
-        Log::log(Log::SeverityLevel::DEBUG, "updating Cloth");
-#endif
         if(mPaused) return;
         // Each mass will have the same force applied
         // gravitay
@@ -210,69 +206,18 @@ void Cloth::updateGeometry(atlas::utils::Time const& t)
                 {
                         // Ignore baddies
                         if (mIt->neighbors[i].index == 0) continue;
-#ifdef PROG_DEBUG
-                        const unsigned int other_index = mIt->neighbors[i].index - 1;
-#endif
                         // Okay, for each of our neighbors, calculate force
                         const struct mass_t mother = mMasses[mIt->neighbors[i].index - 1];
                         const glm::vec3 displacement = mother.position - mIt->position;
                         const float x = glm::length(displacement);
                         F += glm::vec4(-mIt->neighbors[i].k * (mIt->neighbors[i].lr - x ) * glm::normalize(displacement), 0.f);
-                        //F = -mIt->neighbors[i].k * (mIt->neighbors[i].lr - x) * glm::vec4(0, 1, 0, 0);
-#ifdef PROG_DEBUG
-                        glm::vec3 t = mIt->neighbors[i].k * (x-mIt->neighbors[i].lr) *glm::normalize(displacement);
-                        Log::log(Log::SeverityLevel::DEBUG,
-                                        "Distance: " + std::to_string(x) + ", " +
-                                        std::to_string(mIt->neighbors[i].lr) + "=" +
-                                        std::to_string(mIt->neighbors[i].lr - x));
-                        Log::log(Log::SeverityLevel::DEBUG, "Displacement: " +
-                                        std::to_string(displacement.x) + ", " +
-                                        std::to_string(displacement.y) + ", " +
-                                        std::to_string(displacement.z));
-                        /*Log::log(Log::SeverityLevel::DEBUG, "Spring Force[" + std::to_string(index) + "-" + std::to_string(other_index)+"][" + std::to_string(i)+"]: " +
-                                        std::to_string(t.x) + ", " +
-                                        std::to_string(t.y) + ", " +
-                                        std::to_string(t.z)); */
-#endif
                 }
 
                 // Euler Integrator
                 const glm::vec4 a = F / mIt->mass;
                 s = mVelocities[index] * t.deltaTime + 0.5f * a * t.deltaTime * t.deltaTime;
                 mVelocities[index] = mVelocities[index] + a * t.deltaTime;
-#ifdef PROG_DEBUG
-                /*
-                USING_ATLAS_CORE_NS;
-                Log::log(Log::SeverityLevel::DEBUG, "F: " +
-                                std::to_string(F.x) + ", "+
-                                std::to_string(F.y) + ", "+
-                                std::to_string(F.z));
-
-                Log::log(Log::SeverityLevel::DEBUG, "Acceleration: " +
-                                std::to_string(a.x) + ", "+
-                                std::to_string(a.y) + ", "+
-                                std::to_string(a.z));
-                Log::log(Log::SeverityLevel::DEBUG, "S: " +
-                                std::to_string(s.x) + ", "+
-                                std::to_string(s.y) + ", "+
-                                std::to_string(s.z));
-
-                Log::log(Log::SeverityLevel::DEBUG, "Original Position: " +
-                                std::to_string(mIt->position.x) + ", "+
-                                std::to_string(mIt->position.y) + ", "+
-                                std::to_string(mIt->position.z));
-                                */
-#endif
                 mIt->position = mIt->position + glm::vec3(s.x, s.y, s.z);
-
-#ifdef PROG_DEBUG
-                /*
-                Log::log(Log::SeverityLevel::DEBUG, "New Position: " +
-                                std::to_string(mIt->position.x) + ", "+
-                                std::to_string(mIt->position.y) + ", "+
-                                std::to_string(mIt->position.z));
-                                */
-#endif
         }
         mMasses = masses;
         // Update position
