@@ -7,4 +7,5 @@ set(PROJECT_SOURCE_LIST
         "${CMAKE_CURRENT_SOURCE_DIR}/Spline.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/SplineCam.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/Cloth.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/QuatCam.cpp"
         PARENT_SCOPE)

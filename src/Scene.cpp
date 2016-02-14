@@ -135,7 +135,8 @@ void Scene::updateScene(double time)
                 mTime.deltaTime = static_cast<float>(time) - mTime.currentTime;
                 mTime.totalTime += static_cast<float>(time);
                 mTime.currentTime = static_cast<float>(time);
-                mSplineCam.updateCamera(mTime);
+                if (_viewing == SPLINE_VIEW) mSplineCam.updateCamera(mTime);
+                if (_viewing == QUAT_VIEW) mQuatCam.updateCamera(mTime);
                 mTime.deltaTime *= 2.f;
                 mCloth.updateGeometry(mTime);
         }
@@ -155,9 +156,11 @@ void Scene::renderScene()
                 case SPLINE_VIEW:
                         mView = mSplineCam.getCameraMatrix();
                         break;
+                case QUAT_VIEW:
+                        mView = mQuatCam.getCameraMatrix();
+                        break;
         }
         mGrid.renderGeometry(mProjection, mView);
-        //if(_viewing != SPLINE_VIEW)
         mCloth.renderGeometry(mProjection, mView);
         mSpline.renderGeometry(mProjection, mView);
 }

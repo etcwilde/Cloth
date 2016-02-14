@@ -12,6 +12,7 @@
 
 #include "Camera.hpp"
 #include "SplineCam.hpp"
+#include "QuatCam.hpp"
 #include "Grid.hpp"
 #include "Spline.hpp"
 #include "ShaderPaths.hpp"
@@ -39,7 +40,7 @@ class Scene: public atlas::utils::Scene
 
                 // Not a whole lot of options right now
                 enum MoveType { CAMERA, OBJECT };
-                enum ViewType { USER_VIEW, SPLINE_VIEW };
+                enum ViewType { USER_VIEW, QUAT_VIEW, SPLINE_VIEW };
 
                 inline void stepScene()
                 {
@@ -68,6 +69,7 @@ class Scene: public atlas::utils::Scene
                 Grid mGrid;
                 ArcCamera mCamera;
                 SplineCamera mSplineCam;
+                QuatCamera mQuatCam;
                 Cloth mCloth;
 
                 // For displaying the last pick
