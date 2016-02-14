@@ -5,14 +5,14 @@
 Evan Wilde 2016
 
 This is a simple 12-spring spring-mass cloth simulation. It includes a cloth, a
-user-camera, and a spline camera. The user-camera is a full arcball implementation,
-allowing rotations on any axis.
+user-camera, a quaternion camera, and a spline camera. The user-camera is a full
+arcball implementation, allowing rotations on any axis.
 
 ## Usage Instructions
 
 ### General:
 
-- c: Toggles between the user and spline camera
+- c: Rotate through camera modes
 - f: Toggles the fan
 - SPACE: Toggles the simulation
 
@@ -22,6 +22,13 @@ allowing rotations on any axis.
 - Scroll Wheel: Incremental Dolly
 - SHIFT + Middle Mouse Click: Track
 - Middle Mouse Click: Rotate View
+
+### Quaternion Camera:
+
+The quaternion camera has no user inputs.
+
+Note: This one is meant to just sit there and spin. It is pretty funny looking,
+though it is not my fault if you get sick, consider yourself warned.
 
 ### Spline Camera:
 
