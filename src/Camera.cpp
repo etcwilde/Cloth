@@ -37,7 +37,6 @@ void ArcBall::mouseDrag(const atlas::math::Point2& pt, glm::quat& rot)
         _mapToSphere(pt, _endVec);
         glm::vec3 perp;
         perp = glm::cross(_startVec, _endVec);
-        // FIXME: Replace with atlas is_zero
         if(!isZero(glm::length(perp)))
         {
                 rot.x = perp.x;
