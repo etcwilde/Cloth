@@ -130,13 +130,14 @@ void Scene::screenResizeEvent(int width, int height)
 
 void Scene::updateScene(double time)
 {
+        mTime.deltaTime = static_cast<float>(time) - mTime.currentTime;
+        mTime.totalTime += static_cast<float>(time);
+        mTime.currentTime = static_cast<float>(time);
+
         if(!mPaused)
         {
-                mTime.deltaTime = static_cast<float>(time) - mTime.currentTime;
-                mTime.totalTime += static_cast<float>(time);
-                mTime.currentTime = static_cast<float>(time);
                 if (_viewing == SPLINE_VIEW) mSplineCam.updateCamera(mTime);
-                if (_viewing == QUAT_VIEW) mQuatCam.updateCamera(mTime);
+                //if (_viewing == QUAT_VIEW) mQuatCam.updateCamera(mTime);
                 mTime.deltaTime *= 2.f;
                 mCloth.updateGeometry(mTime);
         }
@@ -156,9 +157,9 @@ void Scene::renderScene()
                 case SPLINE_VIEW:
                         mView = mSplineCam.getCameraMatrix();
                         break;
-                case QUAT_VIEW:
-                        mView = mQuatCam.getCameraMatrix();
-                        break;
+                //case QUAT_VIEW:
+                //        mView = mQuatCam.getCameraMatrix();
+                //        break;
         }
         mGrid.renderGeometry(mProjection, mView);
         mCloth.renderGeometry(mProjection, mView);

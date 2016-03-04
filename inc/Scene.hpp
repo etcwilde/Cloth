@@ -40,7 +40,7 @@ class Scene: public atlas::utils::Scene
 
                 // Not a whole lot of options right now
                 enum MoveType { CAMERA, OBJECT };
-                enum ViewType { USER_VIEW, QUAT_VIEW, SPLINE_VIEW };
+                enum ViewType { USER_VIEW, SPLINE_VIEW };
 
                 inline void stepScene()
                 {
